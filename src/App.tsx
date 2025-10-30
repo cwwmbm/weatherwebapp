@@ -3,6 +3,8 @@ import { fetchDailyForecast, type DailyForecast, fetchHourlyForecast, type Hourl
 import { WeatherCard } from './components/WeatherCard';
 import { HourlyRow } from './components/HourlyRow';
 import { localDateTimeFromISOMinute } from './utils/date';
+import { SearchBox } from './components/SearchBox';
+import type { GeocodeResult } from './services/geocoding';
 
 function App() {
   const [forecast, setForecast] = useState<DailyForecast | null>(null);
@@ -12,15 +14,18 @@ function App() {
   const [tab, setTab] = useState<'daily' | 'hourly'>('daily');
 
   // Vancouver, BC
-  const latitude = 49.2827;
-  const longitude = -123.1207;
+  const [coords, setCoords] = useState<{ latitude: number; longitude: number; label: string }>({
+    latitude: 49.2827,
+    longitude: -123.1207,
+    label: 'Vancouver, BC, Canada'
+  });
 
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
     Promise.all([
-      fetchDailyForecast({ latitude, longitude, days: 14 }),
-      fetchHourlyForecast({ latitude, longitude, hours: 48 })
+      fetchDailyForecast({ latitude: coords.latitude, longitude: coords.longitude, days: 14 }),
+      fetchHourlyForecast({ latitude: coords.latitude, longitude: coords.longitude, hours: 48 })
     ])
       .then(([dailyData, hourlyData]) => {
         if (!isMounted) return;
@@ -38,17 +43,21 @@ function App() {
     return () => {
       isMounted = false;
     };
-  }, [latitude, longitude]);
+  }, [coords.latitude, coords.longitude]);
 
-  const title = useMemo(() => 'Vancouver Daily Forecast', []);
+  const title = useMemo(() => 'Weather Forecast', []);
 
   return (
     <div className="app-container">
       <header className="app-header">
         <h1>{title}</h1>
         <p className="subtitle">Weather in 
-          <strong> Vancouver, BC, Canada</strong>
+          <strong> {coords.label}</strong>
         </p>
+        <SearchBox onPick={(place: GeocodeResult) => {
+          const label = `${place.name}${place.admin1 ? ', ' + place.admin1 : ''}, ${place.country}`;
+          setCoords({ latitude: place.latitude, longitude: place.longitude, label });
+        }} />
         <div className="tabs">
           <button className={tab === 'daily' ? 'tab active' : 'tab'} onClick={() => setTab('daily')}>Daily</button>
           <button className={tab === 'hourly' ? 'tab active' : 'tab'} onClick={() => setTab('hourly')}>Hourly</button>
