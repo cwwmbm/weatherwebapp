@@ -1,6 +1,6 @@
 ## Vancouver Weather App
 
-Daily weather forecast for Vancouver, BC, Canada using Open-Meteo (no API key required).
+Daily weather forecast app using Open-Meteo (no API key required).
 
 ### Features
 - Daily icon (emoji), max temperature (C), and precipitation (mm)
