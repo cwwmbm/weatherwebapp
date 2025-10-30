@@ -29,10 +29,12 @@ export function WeatherCard({ day }: Props) {
           <span className="metric-label">Low</span>
           <span className="metric-value">{Math.round(day.temperatureMin)}°C</span>
         </div>
-        <div className="metric">
-          <span className="metric-label">Precip</span>
-          <span className="metric-value">{Math.round(day.precipitationMm)} mm</span>
-        </div>
+      </div>
+      <div className="precip-right">
+        {typeof day.precipitationProbability === 'number' && (
+          <span className="metric-label">{Math.round(day.precipitationProbability)}%</span>
+        )}
+        <span className="metric-value">{Math.round(day.precipitationMm)} mm</span>
       </div>
     </article>
   );

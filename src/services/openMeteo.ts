@@ -4,6 +4,7 @@ export type DailyForecastDay = {
   temperatureMax: number; // °C
   temperatureMin: number; // °C
   precipitationMm: number; // mm
+  precipitationProbability?: number; // % (daily max)
 };
 
 export type DailyForecast = {
@@ -22,7 +23,7 @@ export async function fetchDailyForecast({ latitude, longitude, days }: FetchDai
   const url = new URL('https://api.open-meteo.com/v1/forecast');
   url.searchParams.set('latitude', latitude.toString());
   url.searchParams.set('longitude', longitude.toString());
-  url.searchParams.set('daily', 'weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum');
+  url.searchParams.set('daily', 'weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max');
   url.searchParams.set('timezone', 'America/Vancouver');
   url.searchParams.set('temperature_unit', 'celsius');
   if (days) url.searchParams.set('forecast_days', String(days));
@@ -39,8 +40,12 @@ export async function fetchDailyForecast({ latitude, longitude, days }: FetchDai
   const temperatureMax: number[] = json.daily?.temperature_2m_max ?? [];
   const temperatureMin: number[] = json.daily?.temperature_2m_min ?? [];
   const precipitationSum: number[] = json.daily?.precipitation_sum ?? [];
+  const precipitationProbabilityMax: Array<number | null> = json.daily?.precipitation_probability_max ?? [];
 
-  const length = Math.min(time.length, weathercode.length, temperatureMax.length, temperatureMin.length, precipitationSum.length);
+  let length = Math.min(time.length, weathercode.length, temperatureMax.length, temperatureMin.length, precipitationSum.length);
+  if (precipitationProbabilityMax.length) {
+    length = Math.min(length, precipitationProbabilityMax.length);
+  }
   const daysParsed: DailyForecastDay[] = [];
   for (let i = 0; i < length; i++) {
     daysParsed.push({
@@ -48,7 +53,8 @@ export async function fetchDailyForecast({ latitude, longitude, days }: FetchDai
       weatherCode: weathercode[i],
       temperatureMax: temperatureMax[i],
       temperatureMin: temperatureMin[i],
-      precipitationMm: precipitationSum[i]
+      precipitationMm: precipitationSum[i],
+      precipitationProbability: precipitationProbabilityMax[i] ?? undefined
     });
   }
 

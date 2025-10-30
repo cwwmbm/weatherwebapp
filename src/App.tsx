@@ -19,7 +19,7 @@ function App() {
     let isMounted = true;
     setLoading(true);
     Promise.all([
-      fetchDailyForecast({ latitude, longitude }),
+      fetchDailyForecast({ latitude, longitude, days: 14 }),
       fetchHourlyForecast({ latitude, longitude, hours: 48 })
     ])
       .then(([dailyData, hourlyData]) => {

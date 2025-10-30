@@ -53,12 +53,14 @@ body {
 .weekday { font-weight: 600; font-size: 14px; }
 .monthday { color: var(--muted); font-size: 12px; margin-top: 2px; }
 
-.weather-card .icon { grid-column: 2 / 3; grid-row: 1 / 3; font-size: 36px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); }
+.weather-card .icon { grid-column: 2 / 3; grid-row: 1 / 2; font-size: 36px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); }
 
-.metrics { grid-column: 1 / 2; grid-row: 2 / 3; display: flex; gap: 16px; }
-.metric { display: flex; flex-direction: column; }
-.metric-label { color: var(--muted); font-size: 12px; }
+.metrics { grid-column: 1 / 2; grid-row: 2 / 3; display: flex; flex-direction: column; gap: 8px; }
+.metric { display: flex; flex-direction: row; align-items: baseline; gap: 8px; }
+.metric-label { color: var(--muted); font-size: 12px; min-width: 52px; }
 .metric-value { font-size: 16px; font-weight: 600; }
+
+.precip-right { grid-column: 2 / 3; grid-row: 2 / 3; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
 
 .app-footer { text-align: center; margin-top: 22px; }
 .app-footer a { color: var(--accent); text-decoration: none; }
